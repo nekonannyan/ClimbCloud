@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
     Rigidbody2D rigidbody2D;
+    Animator animator;
     float jumpForce = 680.0f;
     float walkForce = 30.0f;
     float maxwalkForce = 2.0f;
@@ -13,6 +15,7 @@ public class PlayerController : MonoBehaviour
     {
         Application.targetFrameRate = 60;
         this.rigidbody2D = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -22,12 +25,29 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             this.rigidbody2D.AddForce(transform.up * this.jumpForce);
-
+            animator.SetBool("jump", true);
         }
-        //左右のキーで横移動
-        int key = 0;
-        if (Input.GetKeyDown(KeyCode.RightArrow)) key = 1;
-        if (Input.GetKeyDown(KeyCode.LeftArrow)) key = -1;
+        else
+        {
+            animator.SetBool("jump", false);
+        }
+
+            //左右のキーで横移動
+            int key = 0;
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            key = 1;
+            animator.SetBool("walk", true);
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            key = -1;
+            animator.SetBool("walk", true);
+        }
+        else
+        {
+            animator.SetBool("walk", false);
+        }
 
         //プレイヤーの速度
         float speedx = Mathf.Abs(this.rigidbody2D.velocity.x);
@@ -44,5 +64,11 @@ public class PlayerController : MonoBehaviour
             transform.localScale = new Vector3(key, 1, 1);
         }
 
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Debug.Log("Goal");
+        SceneManager.LoadScene("Clear");
     }
 }
