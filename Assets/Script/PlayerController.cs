@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class PlayerController : MonoBehaviour
 {
@@ -22,7 +23,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         //スペースキーでジャンプをする
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && this.rigidbody2D.velocity.y == 0)
         {
             this.rigidbody2D.AddForce(transform.up * this.jumpForce);
             animator.SetBool("jump", true);
@@ -64,6 +65,11 @@ public class PlayerController : MonoBehaviour
             transform.localScale = new Vector3(key, 1, 1);
         }
 
+        if (transform.position.y <= -6)
+        {
+            Debug.Log("ゲームオーバー");
+            SceneManager.LoadScene("Game");
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
